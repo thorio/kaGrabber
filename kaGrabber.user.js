@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kissanime Link Grabber dev
 // @namespace    http://tampermonkey.net/
-// @version      0.1.2.14
+// @version      1.0
 // @description  nothin yet
 // @author       Thorou
 // @homepageURL  https://github.com/thorio/kaGrabber/
