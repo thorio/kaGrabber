@@ -1,0 +1,17 @@
+<div class="rightBox">
+	<div class="barTitle">
+		Batch Grabber
+	</div>
+	<div class="barContent">
+		<div class="arrow-general">
+			&nbsp;
+		</div>
+		from <input type="number" id="grabberFrom" value=1 min=1 style="width: 40px; border: 1px solid #666666; background: #393939; padding: 3px; color: #ffffff;"> to <input type="number" id="grabberTo" value=1 min=1 style="width: 40px; border: 1px solid #666666; background: #393939; padding: 3px; color: #ffffff;">
+		<br><br>
+		<input type="button" value="Grab All" style="background-color: #527701; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; float: left" onclick="KAstart()">
+		<div style="width: 5px; float: left">&nbsp;</div>
+		<input type="button" value="Grab Range" style="background-color: #527701; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; float: left" onclick="KAstart(document.getElementById('grabberFrom').value,document.getElementById('grabberTo').value)">
+	</div>
+</div>
+<div class="clear2">
+</div>
