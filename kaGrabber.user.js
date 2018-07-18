@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name         Kissanime Link Grabber dev
+// @name         Kissanime Link Grabber
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  nothin yet
+// @description  gets openload links from kissanime.ru
 // @author       Thorou
 // @homepageURL  https://github.com/thorio/kaGrabber/
-// @updateURL  http://localhost:8080/kaGrabber.user.js
-// @downloadURL  http://localhost:8080/kaGrabber.user.js
+// @updateURL  https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @downloadURL  https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
 // @match        http://kissanime.ru/*
 // ==/UserScript==
 
