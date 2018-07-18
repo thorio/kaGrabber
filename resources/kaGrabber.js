@@ -13,7 +13,7 @@ function KAloadtable() {
 		return false;
 	}
 	katable = JSON.parse(window.name);
-	if (katable.identifier === identifier) { //is the JSON from this script?
+	if (katable.identifier === identifier) { //is the JSON from this script? 
 		return true;
 	}
 	delete katable; //not a JSON, abort
@@ -47,6 +47,7 @@ function KAstart(startnum, endnum) {
 	for (var i = 2; i < katable.episodeListObject.length; i++) {
 		katable.linklist.push(katable.episodeListObject[i].children[0].children[0].href)
 	}
+	katable.linklist.reverse();
 	KAsavetable();
 	window.location.href = katable.linklist[katable.position]; //goto link selection
 }
@@ -74,7 +75,9 @@ function KAchangeServer() {
 }
 
 function KAgetLink() {
-	katable.finishedlist.push(document.getElementById("divContentVideo").children[0].src);
+	var re = new RegExp('"https://openload.co/embed/(.*?)"');
+	var currentLink = document.body.innerHTML.match(re)[0];
+	katable.finishedlist.push(currentLink.split('"')[1]);
 	katable.status = "captcha";
 	katable.position += 1
 	if (katable.position >= katable.linklist.length || katable.position >= katable.endnum) {
@@ -86,6 +89,7 @@ function KAgetLink() {
 		window.location.href = katable.linklist[katable.position];
 	}
 }
+
 
 function KAprintlinks() {
 	var string = ""; 
