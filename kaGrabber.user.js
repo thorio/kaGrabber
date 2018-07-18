@@ -1,14 +1,21 @@
 // ==UserScript==
-// @name         Kissanime Link Grabber
-// @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  gets openload links from kissanime.ru
-// @author       Thorou
-// @homepageURL  https://github.com/thorio/kaGrabber/
-// @updateURL  https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @downloadURL  https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @match        http://kissanime.ru/*
+// @name					Kissanime Link Grabber
+// @namespace			http://thorou.bitballoon.com/
+// @version				1.0
+// @description		gets openload links from kissanime.ru
+// @author				Thorou
+// @license				MIT
+// @homepageURL		https://github.com/thorio/kaGrabber/
+// @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @downloadURL		https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @match					http://kissanime.ru/*
 // ==/UserScript==
+//
+//Copyright 2018 Leon Timm
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function() {
 	'use strict';
@@ -18,8 +25,8 @@
 			var rightside = document.getElementById("rightside");
 			var grabberUIBoxElement = document.createElement("div");
 			grabberUIBoxElement.id = "grabberUIBoxElement";
-			grabberUIBoxElement.innerHTML = optsHTML; //injected HTML can be found below
-			rightside.insertBefore(grabberUIBoxElement, rightside.children[2]);
+			grabberUIBoxElement.innerHTML = optsHTML; //this variable is declared below
+			rightside.insertBefore(grabberUIBoxElement, rightside.children[2]); //insert HTML elements into page
 			var episodeCount = document.getElementsByClassName("listing")[0].children[0].children.length-2;
 			document.getElementById("grabberTo").value = episodeCount; //set min and max for the episode selectors
 			document.getElementById("grabberTo").max = episodeCount;
@@ -33,6 +40,7 @@
 
 	//HTML and JS pasted here because Tampermonkey apparently doesn't allow resources to be updated
 
+	//HTML injected into the page
 	var optsHTML = `<!--thorou-->
 <div class="rightBox">
 	<div class="barTitle">
@@ -51,7 +59,8 @@
 </div>
 <div class="clear2">
 </div>`;
-
+	
+	//js injected into the page, this gets the links
 	var grabberScript = `//thorou
 var katable = {};
 var identifier = "kissanime.ru_DownloadData";
@@ -171,5 +180,6 @@ function KAsiteload() {
 if (window.name !== "") {
 	KAsiteload();
 }`;
-	inject(); //run the injection code after the above has been defined
+
+	inject();
 })();
