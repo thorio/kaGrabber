@@ -4,10 +4,10 @@
 // @version      0.1
 // @description  nothin yet
 // @author       Thorou
-// @homepageURL  http://thorou.bitballoon.com
-// @downloadURL  http://localhost:8080/kaGrabber.user.js
-// @resource optsHTML http://localhost:8080/grabberOpts.html
-// @resource grabberScript http://localhost:8080/kaGrabber.js
+// @homepageURL  https://github.com/thorio/kaGrabber/
+// @downloadURL  https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @resource optsHTML https://github.com/thorio/kaGrabber/raw/master/resources/kaGrabber.js
+// @resource grabberScript https://github.com/thorio/kaGrabber/raw/master/resources/grabberOpts.html
 // @match        http://kissanime.ru/*
 // @grant        GM_getResourceText
 // ==/UserScript==

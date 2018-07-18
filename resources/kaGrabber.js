@@ -1,3 +1,4 @@
+//thorou
 var katable = {};
 var identifier = "kissanime.ru_DownloadData";
 
