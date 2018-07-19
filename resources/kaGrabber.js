@@ -13,7 +13,7 @@ function KAloadtable() {
 		return false;
 	}
 	katable = JSON.parse(window.name);
-	if (katable.identifier === identifier) { //is the JSON from this script? 
+	if (katable.identifier === identifier) { //check if data is from this script (incase another script is using window.name)
 		return true;
 	}
 	delete katable; //not a JSON, abort
@@ -45,7 +45,7 @@ function KAstart(startnum, endnum) {
 	//katable.endnum = 999; //array number to end at
 	katable.finishedlist = []; //list of all extracted streams
 	for (var i = 2; i < katable.episodeListObject.length; i++) {
-		katable.linklist.push(katable.episodeListObject[i].children[0].children[0].href)
+		katable.linklist.push(katable.episodeListObject[i].children[0].children[0].href);
 	}
 	katable.linklist.reverse();
 	KAsavetable();
@@ -55,15 +55,15 @@ function KAstart(startnum, endnum) {
 function KAwaitCaptcha() {
 	var barTitle = document.getElementsByClassName("barTitle");
 	if (barTitle.length == 0) {
-		KAchangeServer();
+		KAchangeSource();
 	} else {
 		if (barTitle[0].innerText != "Are you human?") {
-			KAchangeServer();
+			KAchangeSource();
 		}
 	}
 }
 
-function KAchangeServer() {
+function KAchangeSource() {
 	var selectServerList = document.getElementById("selectServer").children;
 	for (var i = 0; i < selectServerList.length; i++) {
 		if (selectServerList[i].innerText == "Openload") {
@@ -91,24 +91,29 @@ function KAgetLink() {
 }
 
 
-function KAprintlinks() {
+function KAprintLinks() {
 	var string = ""; 
-	for (var i = 0; i<katable.finishedlist.length; i++) { //string together all the links, seperated by spaces.
+	for (var i = 0; i<katable.finishedlist.length; i++) { //string together all the links, seperated by spaces
 		string += katable.finishedlist[i] + " ";
 	}
-	alert(string);
-	console.log(string)
+	console.log(string);
+	var stringList = "";
+	for (var i = 0; i<katable.finishedlist.length; i++) { //string together all the links, seperated by newlines
+		stringList += katable.finishedlist[i] + String.fromCharCode(10);
+	}
+	document.getElementById("grabberLinkDisplay").innerText = stringList; //push the links to the display element
+	document.getElementById("grabberLinkContainer").style.display = "block"; //make the display visible
 	window.name = "";
 }
 
 function KAsiteload() {
-	if (KAloadtable()) {
+	if (KAloadtable()) { //check which state the script is supposed to be in and call the appropriate function
 		if (katable.status == "captcha") {
 			KAwaitCaptcha();
 		} else if (katable.status == "getlink") {
 			KAgetLink();
 		} else if (katable.status == "finished") {
-			KAprintlinks();
+			KAprintLinks();
 		}
 	}
 
