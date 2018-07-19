@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name					Kissanime Link Grabber dev
+// @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.0
+// @version				1.1
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
 // @license				MIT
