@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.1
+// @version				1.2
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
 // @license				MIT
@@ -19,21 +19,34 @@
 
 (function() {
 	'use strict';
+
 	function inject() {
 		//add UI elements
-		if (window.location.href.substring(0, 26) == "http://kissanime.ru/Anime/" && document.getElementsByClassName("barTitle").length>0) {
+		if (window.location.href.substring(0, 26) == "http://kissanime.ru/Anime/" && document.getElementsByClassName("barTitle").length > 0) {
+			//grabber widget
 			var grabberUIBox = document.createElement("div");
 			grabberUIBox.id = "grabberUIBox";
 			grabberUIBox.innerHTML = optsHTML; //HTML below; grabber widget
 			document.getElementById("rightside").insertBefore(grabberUIBox, rightside.children[2]); //insert grabber widget into rightside container
-			var episodeCount = document.getElementsByClassName("listing")[0].children[0].children.length-2;
+			var episodeCount = document.getElementsByClassName("listing")[0].children[0].children.length - 2;
 			document.getElementById("grabberTo").value = episodeCount; //set min and max for the episode selectors
 			document.getElementById("grabberTo").max = episodeCount;
 			document.getElementById("grabberFrom").max = episodeCount;
 
+			//link display
 			var grabberList = document.createElement("div");
 			grabberList.innerHTML = linkListHTML; //HTML below; link output
 			document.getElementById("leftside").prepend(grabberList);
+
+			//individual grab button for each individual episode
+			var listingTable = document.getElementsByClassName("listing")[0].children[0];
+			for (var i = 2; i < listingTable.children.length; i++) { //first two items aren't actually episodes
+				var currentItem = listingTable.children[i].children[0];
+				var currentEpisodeName = currentItem.children[0].innerText;
+				//var addedHTML = '<a onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ')" title="Download ' + currentEpisodeName + '">download</a> - '
+				var addedHTML = '<input type="button" value="grab" style="background-color: #527701; color: #ffffff; border: none; cursor: pointer;" onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ')">&nbsp;'
+				currentItem.innerHTML = addedHTML + currentItem.innerHTML;
+			}
 		}
 		var script = document.createElement('script');
 		script.type = "text/javascript";
@@ -63,7 +76,7 @@
 </div>
 <div class="clear2">
 </div>`
-	
+
 	//initially hidden HTML that is revealed and filled in by the grabber script
 	var linkListHTML = `<div class="bigBarContainer" id="grabberLinkContainer" style="display: none;">
 	<div class="barTitle">
@@ -124,7 +137,7 @@ function KAstart(startnum, endnum) {
 	//katable.endnum = 999; //array number to end at
 	katable.finishedlist = []; //list of all extracted streams
 	for (var i = 2; i < katable.episodeListObject.length; i++) {
-		katable.linklist.push(katable.episodeListObject[i].children[0].children[0].href);
+		katable.linklist.push(katable.episodeListObject[i].children[0].children[1].href);
 	}
 	katable.linklist.reverse();
 	KAsavetable();

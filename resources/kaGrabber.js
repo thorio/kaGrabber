@@ -45,7 +45,7 @@ function KAstart(startnum, endnum) {
 	//katable.endnum = 999; //array number to end at
 	katable.finishedlist = []; //list of all extracted streams
 	for (var i = 2; i < katable.episodeListObject.length; i++) {
-		katable.linklist.push(katable.episodeListObject[i].children[0].children[0].href);
+		katable.linklist.push(katable.episodeListObject[i].children[0].children[1].href);
 	}
 	katable.linklist.reverse();
 	KAsavetable();
