@@ -16,3 +16,7 @@ It also adds *Grab* buttons next to each episode to grab them individually.
 6. Copy the links that are shown at the top of the page. The links are also logged to the console (F12)
 
 Following the steps above you will end up with a list of openload embed links. Some download managers are able to download this already, but to be sure you can use [youtube-dl](https://github.com/rg3/youtube-dl) to get limited-time direct links.
+
+<br>
+
+This script can also be found on [GreasyFork](https://greasyfork.org/en/scripts/370401-kissanime-link-grabber) and [OpenUserJS](https://openuserjs.org/scripts/Thorou/Kissanime_Link_Grabber)
