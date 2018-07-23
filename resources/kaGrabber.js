@@ -92,7 +92,7 @@ function KAgetLink() {
 
 
 function KAprintLinks() {
-	var string = ""; 
+	var string = "";
 	for (var i = 0; i<katable.finishedlist.length; i++) { //string together all the links, seperated by spaces
 		string += katable.finishedlist[i] + " ";
 	}

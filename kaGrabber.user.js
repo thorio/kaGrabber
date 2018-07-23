@@ -1,10 +1,9 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.2
+// @version				1.2.1
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
-// @license				MIT
 // @homepageURL		https://github.com/thorio/kaGrabber/
 // @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
 // @downloadURL		https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
@@ -27,7 +26,8 @@
 			var grabberUIBox = document.createElement("div");
 			grabberUIBox.id = "grabberUIBox";
 			grabberUIBox.innerHTML = optsHTML; //HTML below; grabber widget
-			document.getElementById("rightside").insertBefore(grabberUIBox, rightside.children[2]); //insert grabber widget into rightside container
+			var rightside = document.getElementById("rightside");
+			rightside.insertBefore(grabberUIBox, rightside.children[2]); //insert grabber widget into rightside container
 			var episodeCount = document.getElementsByClassName("listing")[0].children[0].children.length - 2;
 			document.getElementById("grabberTo").value = episodeCount; //set min and max for the episode selectors
 			document.getElementById("grabberTo").max = episodeCount;
@@ -184,7 +184,7 @@ function KAgetLink() {
 
 
 function KAprintLinks() {
-	var string = ""; 
+	var string = "";
 	for (var i = 0; i<katable.finishedlist.length; i++) { //string together all the links, seperated by spaces
 		string += katable.finishedlist[i] + " ";
 	}
