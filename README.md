@@ -18,9 +18,9 @@ Installing this script with [Tampermonkey](https://tampermonkey.net) will add a 
 
 Following the steps above you will end up with a list of openload embed links. Some download managers are able to download this already, but to be sure you can
 click the *Get Stream Links* button to generate openload stream links.
-These are limited-time direct links that any download manager or even your browser can download directly.
+These are limited-time direct links that any download manager or even your browser can download directly. Just click on a link to download it.
 
-#### To download the episodes with your browser proceed as follows: 
+#### To download all episodes with your browser proceed as follows: 
 
 7. Click the *Get Stream Links* button and wait for the process to complete
 8. Click the *Download All* button (not recommend for >10 links because openload slows down. Use a download manager for larger batches)
