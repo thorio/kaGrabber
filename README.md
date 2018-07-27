@@ -7,8 +7,6 @@ Installing this script with [Tampermonkey](https://tampermonkey.net) will add a 
 ![image](https://github.com/thorio/kaGrabber/raw/master/images/grabber.png)
 ![image](https://github.com/thorio/kaGrabber/raw/master/images/buttons.png)
 
-It also adds *Grab* buttons next to each episode to grab them individually.
-
 ## Installation and Usage
 
 1. Add the [Tampermonkey](https://tampermonkey.net) extension to your browser
