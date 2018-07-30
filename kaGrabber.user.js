@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.3
+// @version				1.3.1
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
@@ -63,7 +63,7 @@
 	}
 
 	//HTML and JS pasted here because Tampermonkey apparently doesn't allow resources to be updated
-	//if you have a solution for including extra files that are updated when the script is reinstalled please let me know through GitHub
+	//if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com
 
 	//the grabber widget injected into the page
 	var optsHTML = `<div class="rightBox">
@@ -152,7 +152,7 @@ function KAstart(startnum, endnum) {
 	//katable.endnum = 999; //array number to end at
 	katable.finishedlist = []; //list of all extracted links
 	for (var i = 2; i < katable.episodeListObject.length; i++) {
-		katable.linklist.push(katable.episodeListObject[i].children[1].children[1].href);
+		katable.linklist.push(katable.episodeListObject[i].children[1].children[1].href + "&s=openload");
 	}
 	katable.linklist.reverse(); //kissanime lists episodes newest first, this reverses the list
 	KAsavetable();
@@ -162,21 +162,10 @@ function KAstart(startnum, endnum) {
 function KAwaitCaptcha() {
 	var barTitle = document.getElementsByClassName("barTitle");
 	if (barTitle.length == 0) {
-		KAchangeSource();
+		KAgetLink();
 	} else {
 		if (barTitle[0].innerText != "Are you human?") {
-			KAchangeSource();
-		}
-	}
-}
-
-function KAchangeSource() {
-	var selectServerList = document.getElementById("selectServer").children;
-	for (var i = 0; i < selectServerList.length; i++) {
-		if (selectServerList[i].innerText == "Openload") {
-			katable.status = "getlink";
-			KAsavetable();
-			window.location.href = selectServerList[i].value;
+			KAgetLink();
 		}
 	}
 }
@@ -196,7 +185,6 @@ function KAgetLink() {
 		window.location.href = katable.linklist[katable.position];
 	}
 }
-
 
 function KAprintLinks() {
 	var string = "";
@@ -276,8 +264,6 @@ function KAsiteload() {
 	if (KAloadtable()) { //check if data can be retrieved from window.name
 		if (katable.status == "captcha") { //check which state the script is supposed to be in and call the appropriate function
 			KAwaitCaptcha();
-		} else if (katable.status == "getlink") {
-			KAgetLink();
 		} else if (katable.status == "getstreamlink") {
 			KAgetStreamLink();
 		} else if (katable.status == "finished") {
