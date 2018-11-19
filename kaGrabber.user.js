@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.3.1
+// @version				1.3.2
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
 // @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
 // @downloadURL		https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @match					http://kissanime.ru/*
+// @match					https://kissanime.ru/*
 // @match					https://openload.co/embed/*
 // ==/UserScript==
 //
@@ -22,7 +22,7 @@
 
 	function inject() {
 		//add UI elements
-		if (window.location.href.substring(0, 26) == "http://kissanime.ru/Anime/" && document.getElementsByClassName("barTitle").length > 0) {
+		if ( (window.location.href.substring(8, 27) == "kissanime.ru/Anime/" || window.location.href.substring(7, 26) == "kissanime.ru/Anime/") && document.getElementsByClassName("barTitle").length > 0) {
 			//grabber widget
 			var grabberUIBox = document.createElement("div");
 			grabberUIBox.id = "grabberUIBox";
