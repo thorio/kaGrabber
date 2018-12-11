@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+		"settings":
+		{
+				"build_on_save": true,
+		},
+		"build_systems": [
+		{
+			"name": "make.js",
+			"working_dir": "${project_path}",
+			"cmd": ["make.js", "mkdir hey"]
+		}
+	]
+}

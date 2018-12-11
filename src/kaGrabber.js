@@ -35,8 +35,9 @@ function KAstart(startnum, endnum) {
 	} else {
 		katable.endnum = endnum;
 	}
+	katable.showTitle = $(".bigChar").get(0).text;
 	katable.identifier = identifier; //not get confused with potential other data in window.name
-	katable.episodeListObject = document.getElementsByClassName("listing")[0].children[0].children; //html collection of all episode list objects
+	katable.episodeListObject = $(".listing").get(0).children[0].children; //html collection of all episode list objects
 	katable.linklist = []; //list for all episode links
 	katable.originalpage = window.location.href; //page to return to when finished
 	katable.status = "captcha"; //status string to indicate current task
@@ -79,6 +80,9 @@ function KAgetLink() {
 }
 
 function KAprintLinks() {
+	if (!(window.location.href.substring(8, 27) == "kissanime.ru/Anime/" || window.location.href.substring(7, 26) == "kissanime.ru/Anime/")) {
+		return;
+	}
 	var string = "";
 	for (var i = 0; i < katable.finishedlist.length; i++) { //string together all the links, seperated by spaces
 		string += katable.finishedlist[i] + " ";
@@ -90,17 +94,21 @@ function KAprintLinks() {
 	}
 	var grabberLinkDisplay = document.getElementById("grabberLinkDisplay");
 	grabberLinkDisplay.innerText = string; //push the links to the display element
+	$("#grabberLinkDisplayTitle").get(0).innerText = "Extracted Links | " + katable.showTitle;
 	if (katable.streamlinklist) {
 		string = "<div id='grabberStreamLinks'>";
-		for (var i = 0; i < katable.streamlinklist.length; i++) {
-			string += "<a href='" + katable.streamlinklist[i] + "' download>" + katable.streamlinklist[i] + "</a><br>";
+		for (var i = 0; i < katable.streamlinklist.length; i++) { //string together all stream links, also wrap them in anchor tags
+			if (katable.streamlinklist[i] == "file not found") { // if there was an error getting the link
+				string += "<a>file not found</a><br>";
+			} else {
+				string += "<a href='" + katable.streamlinklist[i] + "' download>" + katable.streamlinklist[i] + "</a><br>";
+			}
 		}
 		grabberLinkDisplay.innerHTML += "<hr><p style='font-size: 16px'>Stream Links</p>" + string + "</div><br>";
 		document.getElementById("grabberGetStreamLinks").hidden = true;
 		document.getElementById("grabberDownloadAll").hidden = false;
 	}
 	document.getElementById("grabberLinkContainer").style.display = "block"; //make the display visible
-	window.name = "";
 }
 
 function KAgetStreamLink() {
@@ -108,12 +116,18 @@ function KAgetStreamLink() {
 	var el = document.elementFromPoint(20, 20);
 	el.dispatchEvent(ev); //simulate click
 	var re = new RegExp('"/stream/(.*?)"');
-	var streamLink = document.body.innerHTML.match(re)[0]; //get stream link
-	streamLink = streamLink.split('"')[1]; //remove quotes
-	streamLink = "https://openload.co" + streamLink;
-	if (streamLink.slice(-10) == "?mime=true") {
-		streamLink = streamLink.substr(0, streamLink.length - 10);
+	var result = document.body.innerHTML.match(re); //get stream link
+	if (result) {
+		streamLink = result[0];
+		streamLink = streamLink.split('"')[1]; //remove quotes
+		streamLink = "https://openload.co" + streamLink;
+		if (streamLink.slice(-10) == "?mime=true") {
+			streamLink = streamLink.substr(0, streamLink.length - 10);
+		}
+	} else {
+		streamLink = "file not found"
 	}
+
 	katable.streamlinklist.push(streamLink);
 	katable.position++;
 
@@ -141,6 +155,7 @@ function KAshortenLinks() {
 		katable.finishedlist[i] = katable.finishedlist[i].substr(0, 38);
 	}
 	KAprintLinks();
+	KAsavetable();
 }
 
 function KAdownloadAll(delay) {
@@ -162,6 +177,11 @@ function KAsiteload() {
 			KAprintLinks();
 		}
 	}
+}
+
+function KAclose() {
+	window.name = "";
+	$("#grabberLinkContainer").get(0).style.display = "none";
 }
 
 if (window.name !== "") {
