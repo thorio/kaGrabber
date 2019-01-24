@@ -146,7 +146,7 @@ function KAstartStreamLinks() {
 	katable.position = 0;
 	katable.status = "getstreamlink";
 	KAsavetable();
-	window.location = katable.finishedlist[katable.position];
+	window.location = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
 }
 
 function KAshortenLinks() {
