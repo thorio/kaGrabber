@@ -133,12 +133,11 @@ function KAgetStreamLink() {
 
 	if (katable.position >= katable.finishedlist.length) {
 		katable.status = "finished";
-		KAsavetable();
-		window.location.href = katable.originalpage;
 	} else {
-		KAsavetable();
-		window.location.href = katable.finishedlist[katable.position];
+		katable.status = "streamlinkworkaround"; //idk why openload reacts the way it does. *sigh*
 	}
+	KAsavetable();
+	window.location.href = katable.originalpage;
 }
 
 function KAstartStreamLinks() {
@@ -146,7 +145,13 @@ function KAstartStreamLinks() {
 	katable.position = 0;
 	katable.status = "getstreamlink";
 	KAsavetable();
-	window.location = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
+	window.location.href = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
+}
+
+function KAnextStreamLink() {
+	katable.status = "getstreamlink";
+	KAsavetable();
+	window.location.href = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
 }
 
 function KAshortenLinks() {
@@ -175,6 +180,8 @@ function KAsiteload() {
 			KAgetStreamLink();
 		} else if (katable.status == "finished") {
 			KAprintLinks();
+		} else if (katable.status == "streamlinkworkaround") {
+			KAnextStreamLink();
 		}
 	}
 }

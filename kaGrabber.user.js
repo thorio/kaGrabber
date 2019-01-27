@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.3.4
+// @version				1.3.5
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
@@ -22,25 +22,25 @@
 
 	function inject() {
 		//add UI elements
-		if ( (window.location.href.substring(8, 27) == "kissanime.ru/Anime/" || window.location.href.substring(7, 26) == "kissanime.ru/Anime/") && document.getElementsByClassName("barTitle").length > 0) {
+		if ( (window.location.href.substring(8, 27) == "kissanime.ru/Anime/" || window.location.href.substring(7, 26) == "kissanime.ru/Anime/") && $(".barTitle").length > 0) {
 			//grabber widget
 			var grabberUIBox = document.createElement("div");
 			grabberUIBox.id = "grabberUIBox";
 			grabberUIBox.innerHTML = optsHTML; //HTML below; grabber widget
-			var rightside = document.getElementById("rightside");
+			var rightside = $("#rightside").get(0);
 			rightside.insertBefore(grabberUIBox, rightside.children[2]); //insert grabber widget into rightside container
-			var episodeCount = document.getElementsByClassName("listing")[0].children[0].children.length - 2;
-			document.getElementById("grabberTo").value = episodeCount; //set min and max for the episode selectors
-			document.getElementById("grabberTo").max = episodeCount;
-			document.getElementById("grabberFrom").max = episodeCount;
+			var episodeCount = $(".listing").children(0).children().length - 2;
+			$("#grabberTo").val(episodeCount); //set min and max for the episode selectors
+			$("#grabberTo").attr("max", episodeCount);
+			$("grabberFrom").attr("max", episodeCount);
 
 			//link display
 			var grabberList = document.createElement("div");
 			grabberList.innerHTML = linkListHTML; //HTML below; link output
-			document.getElementById("leftside").prepend(grabberList);
+			$("#leftside").prepend(grabberList);
 
 			//individual grab button for each individual episode
-			var listingTable = document.getElementsByClassName("listing")[0].children[0];
+			var listingTable = $(".listing").children(0).get(0);
 			var tableNum = document.createElement("th");
 			tableNum.width = "3%";
 			tableNum.innerText = "#";
@@ -59,7 +59,7 @@
 		var script = document.createElement("script");
 		script.type = "text/javascript";
 		script.innerHTML = grabberScript; //JS below; grabber script
-		document.getElementsByTagName("head")[0].appendChild(script);
+		document.head.appendChild(script);
 	}
 
 	//HTML and JS pasted here because Tampermonkey apparently doesn't allow resources to be updated
@@ -246,12 +246,11 @@ function KAgetStreamLink() {
 
 	if (katable.position >= katable.finishedlist.length) {
 		katable.status = "finished";
-		KAsavetable();
-		window.location.href = katable.originalpage;
 	} else {
-		KAsavetable();
-		window.location.href = katable.finishedlist[katable.position];
+		katable.status = "streamlinkworkaround"; //idk why openload reacts the way it does. *sigh*
 	}
+	KAsavetable();
+	window.location.href = katable.originalpage;
 }
 
 function KAstartStreamLinks() {
@@ -259,7 +258,13 @@ function KAstartStreamLinks() {
 	katable.position = 0;
 	katable.status = "getstreamlink";
 	KAsavetable();
-	window.location = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
+	window.location.href = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
+}
+
+function KAnextStreamLink() {
+	katable.status = "getstreamlink";
+	KAsavetable();
+	window.location.href = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
 }
 
 function KAshortenLinks() {
@@ -288,6 +293,8 @@ function KAsiteload() {
 			KAgetStreamLink();
 		} else if (katable.status == "finished") {
 			KAprintLinks();
+		} else if (katable.status == "streamlinkworkaround") {
+			KAnextStreamLink();
 		}
 	}
 }
