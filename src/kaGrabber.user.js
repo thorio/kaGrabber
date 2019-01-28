@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.3.5
+// @version				1.4
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
@@ -52,7 +52,7 @@
 				listingTable.children[i].prepend(tableNum2);
 				var currentItem = listingTable.children[i].children[1];
 				var currentEpisodeName = currentItem.children[0].innerText;
-				var addedHTML = '<input type="button" value="grab" style="background-color: #527701; color: #ffffff; border: none; cursor: pointer;" onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ')">&nbsp;'
+				var addedHTML = '<input type="button" value="grab" style="background-color: #527701; color: #ffffff; border: none; cursor: pointer;" onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ', $(\'#grabberServer\')[0].value' + ')">&nbsp;'
 				currentItem.innerHTML = addedHTML + currentItem.innerHTML;
 			}
 		}

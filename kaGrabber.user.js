@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.3.5
+// @version				1.4
 // @description		gets openload links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
@@ -52,7 +52,7 @@
 				listingTable.children[i].prepend(tableNum2);
 				var currentItem = listingTable.children[i].children[1];
 				var currentEpisodeName = currentItem.children[0].innerText;
-				var addedHTML = '<input type="button" value="grab" style="background-color: #527701; color: #ffffff; border: none; cursor: pointer;" onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ')">&nbsp;'
+				var addedHTML = '<input type="button" value="grab" style="background-color: #527701; color: #ffffff; border: none; cursor: pointer;" onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ', $(\'#grabberServer\')[0].value' + ')">&nbsp;'
 				currentItem.innerHTML = addedHTML + currentItem.innerHTML;
 			}
 		}
@@ -74,19 +74,33 @@
 		<div class="arrow-general">
 			&nbsp;
 		</div>
-		from
-		<input type="number" id="grabberFrom" value=1 min=1 style="width: 40px; border: 1px solid #666666; background: #393939; padding: 3px; color: #ffffff;"> to
-		<input type="number" id="grabberTo" value=1 min=1 style="width: 40px; border: 1px solid #666666; background: #393939; padding: 3px; color: #ffffff;">
-		<br>
-		<br>
-		<div style="height: 28px;">
-			<input type="button" value="Grab All" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; margin: 3px; font-size: 15px; float: left" onclick="KAstart()">
-			<input type="button" value="Grab Range" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; margin: 3px; font-size: 15px; float: left" onclick="KAstart(document.getElementById('grabberFrom').value,document.getElementById('grabberTo').value)">
-		</div>
+		<p style="margin-top: 0px;">
+			<select id="grabberServer" onchange="KAsavePreferredServer()" style="width: 100%; font-size: 14.5px;">
+				<option value="openload" selected>Openload</option>
+				<option value="rapidvideo">RapidVideo (no captcha)</option>
+				<option value="beta2">Beta2 Server</option>
+				<option value="p2p">P2P Server</option>
+				<option value="mp4upload">Mp4Upload</option>
+				<option value="streamango">Streamango</option>
+				<option value="nova">Nova Server</option>
+				<option value="beta">Beta Server</option>
+			</select>
+		</p>
+		<p>
+			from
+			<input type="number" id="grabberFrom" value=1 min=1 style="width: 40px; border: 1px solid #666666; background: #393939; padding: 3px; color: #ffffff;"> to
+			<input type="number" id="grabberTo" value=1 min=1 style="width: 40px; border: 1px solid #666666; background: #393939; padding: 3px; color: #ffffff;">
+		</p>
+		<p>
+			<div style="height: 28px;">
+				<input type="button" value="Extract Links" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; margin: 3px; font-size: 15px;" onclick="KAstart($('#grabberFrom')[0].value, $('#grabberTo')[0].value, $('#grabberServer')[0].value)">
+			</div>
+		</p>
 	</div>
 </div>
 <div class="clear2">
-</div>`
+</div>
+`
 
 	//initially hidden HTML that is revealed and filled in by the grabber script
 	var linkListHTML = `<div class="bigBarContainer" id="grabberLinkContainer" style="display: none;">
@@ -101,19 +115,31 @@
 	<div class="barContent">
 		<div class="arrow-general">
 			&nbsp;</div>
-		<div id="grabberLinkDisplay"></div>
+		<div id="grabberLinkDisplay" style="word-break: break-all;"></div>
 		<div style="height: 28px;">
 			<input id="grabberGetStreamLinks" type="button" value="Get Stream Links" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; margin: 3px; font-size: 15px; float: left" onclick="KAstartStreamLinks()">
 			<input id="grabberShortenLinks" type="button" value="Shorten Links" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; margin: 3px; float: left" onclick="KAshortenLinks()">
 			<input id="grabberDownloadAll" type="button" value="Download All" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; margin: 3px; float: left" onclick="KAdownloadAll(1000)" hidden>
 		</div>
 	</div>
-</div>`
+</div>
+`
 
 	//js injected into the page, this gets the links
 	var grabberScript = `//thorou
 var katable = {};
 var identifier = "kissanime.ru_DownloadData";
+
+var regexStrings = {
+	openload: '"https://openload.co/embed/(.*?)"',
+	beta: '"https://lh3.googleusercontent.com/(.*?)"',
+	beta2: '"https://lh3.googleusercontent.com/(.*?)"',
+	p2p: '"https://p2p2.replay.watch/public/dist/index.html\\\\?id=(.*?)"',
+	rapidvideo: '"https://www.rapidvideo.com/e/(.*?)"',
+	mp4upload: '"https://www.mp4upload.com/embed-(.*?)"',
+	streamango: '"https://streamango.com/embed/(.*?)"',
+	nova: '"https://www.novelplanet.me/v/(.*?)"',
+}
 
 function KAsavetable() {
 	window.name = JSON.stringify(katable);
@@ -133,7 +159,7 @@ function KAloadtable() {
 	return false;
 }
 
-function KAstart(startnum, endnum) {
+function KAstart(startnum, endnum, server) {
 	if (window.location.hostname != "kissanime.ru") {
 		return false;
 	}
@@ -153,34 +179,32 @@ function KAstart(startnum, endnum) {
 	katable.episodeListObject = $(".listing").get(0).children[0].children; //html collection of all episode list objects
 	katable.linklist = []; //list for all episode links
 	katable.originalpage = window.location.href; //page to return to when finished
-	katable.status = "captcha"; //status string to indicate current task
+	katable.status = "getLink"; //status string to indicate current task
+	katable.server = server || "openload";
 	//katable.position = 0; //position in the episode selection
 	//katable.endnum = 999; //array number to end at
 	katable.finishedlist = []; //list of all extracted links
 	for (var i = 2; i < katable.episodeListObject.length; i++) {
-		katable.linklist.push(katable.episodeListObject[i].children[1].children[1].href + "&s=openload");
+		katable.linklist.push(katable.episodeListObject[i].children[1].children[1].href + "&s=" + katable.server);
 	}
 	katable.linklist.reverse(); //kissanime lists episodes newest first, this reverses the list
 	KAsavetable();
 	window.location.href = katable.linklist[katable.position]; //goto link selection
 }
 
-function KAwaitCaptcha() {
-	var barTitle = document.getElementsByClassName("barTitle");
-	if (barTitle.length == 0) {
-		KAgetLink();
-	} else {
-		if (barTitle[0].innerText != "Are you human?") {
-			KAgetLink();
-		}
-	}
-}
-
 function KAgetLink() {
-	var re = new RegExp('"https://openload.co/embed/(.*?)"');
-	var currentLink = document.body.innerHTML.match(re)[0];
-	katable.finishedlist.push(currentLink.split('"')[1]);
-	katable.status = "captcha";
+	if (window.location.pathname.substr(0, 7) != "/Anime/" || window.location.href == katable.originalpage) {
+		return;
+	}
+	var re = new RegExp(regexStrings[katable.server]);
+	var results = document.body.innerHTML.match(re);
+	if (results) {
+		var currentLink = document.body.innerHTML.match(re)[0];
+		katable.finishedlist.push(currentLink.split('"')[1]);
+	} else {
+		katable.finishedlist.push("error (selected server may not be available)")
+	}
+	katable.status = "getLink";
 	katable.position++;
 	if (katable.position >= katable.linklist.length || katable.position >= katable.endnum) {
 		katable.status = "finished";
@@ -196,18 +220,14 @@ function KAprintLinks() {
 	if (!(window.location.href.substring(8, 27) == "kissanime.ru/Anime/" || window.location.href.substring(7, 26) == "kissanime.ru/Anime/")) {
 		return;
 	}
-	var string = "";
-	for (var i = 0; i < katable.finishedlist.length; i++) { //string together all the links, seperated by spaces
-		string += katable.finishedlist[i] + " ";
-	}
-	console.log(string);
 	string = "";
-	for (var i = 0; i < katable.finishedlist.length; i++) { //string together all the links, seperated by newlines
-		string += katable.finishedlist[i] + String.fromCharCode(10);
+	for (var i = 0; i < katable.finishedlist.length; i++) {
+		string += '<a href="' + katable.finishedlist[i] + '" target="_blank">' + katable.finishedlist[i] + "</a><br>"
 	}
 	var grabberLinkDisplay = document.getElementById("grabberLinkDisplay");
-	grabberLinkDisplay.innerText = string; //push the links to the display element
-	$("#grabberLinkDisplayTitle").get(0).innerText = "Extracted Links | " + katable.showTitle;
+	grabberLinkDisplay.innerHTML = string; //push the links to the display element
+
+	$("#grabberLinkDisplayTitle")[0].innerText = "Extracted Links | " + katable.showTitle;
 	if (katable.streamlinklist) {
 		string = "<div id='grabberStreamLinks'>";
 		for (var i = 0; i < katable.streamlinklist.length; i++) { //string together all stream links, also wrap them in anchor tags
@@ -220,6 +240,10 @@ function KAprintLinks() {
 		grabberLinkDisplay.innerHTML += "<hr><p style='font-size: 16px'>Stream Links</p>" + string + "</div><br>";
 		document.getElementById("grabberGetStreamLinks").hidden = true;
 		document.getElementById("grabberDownloadAll").hidden = false;
+	}
+	if (katable.server != "openload") {
+		$("#grabberShortenLinks").hide();
+		$("#grabberGetStreamLinks").hide();
 	}
 	document.getElementById("grabberLinkContainer").style.display = "block"; //make the display visible
 }
@@ -247,7 +271,7 @@ function KAgetStreamLink() {
 	if (katable.position >= katable.finishedlist.length) {
 		katable.status = "finished";
 	} else {
-		katable.status = "streamlinkworkaround"; //idk why openload reacts the way it does. *sigh*
+		katable.status = "streamLinkWorkaround"; //idk why openload reacts the way it does. *sigh*
 	}
 	KAsavetable();
 	window.location.href = katable.originalpage;
@@ -256,13 +280,13 @@ function KAgetStreamLink() {
 function KAstartStreamLinks() {
 	katable.streamlinklist = [];
 	katable.position = 0;
-	katable.status = "getstreamlink";
+	katable.status = "getStreamLink";
 	KAsavetable();
 	window.location.href = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
 }
 
 function KAnextStreamLink() {
-	katable.status = "getstreamlink";
+	katable.status = "getStreamLink";
 	KAsavetable();
 	window.location.href = katable.finishedlist[katable.position].replace("openload.co", "oload.club");
 }
@@ -287,13 +311,13 @@ function KAdownloadAll(delay) {
 
 function KAsiteload() {
 	if (KAloadtable()) { //check if data can be retrieved from window.name
-		if (katable.status == "captcha") { //check which state the script is supposed to be in and call the appropriate function
-			KAwaitCaptcha();
-		} else if (katable.status == "getstreamlink") {
+		if (katable.status == "getLink") { //check which state the script is supposed to be in and call the appropriate function
+			KAgetLink();
+		} else if (katable.status == "getStreamLink") {
 			KAgetStreamLink();
 		} else if (katable.status == "finished") {
 			KAprintLinks();
-		} else if (katable.status == "streamlinkworkaround") {
+		} else if (katable.status == "streamLinkWorkaround") {
 			KAnextStreamLink();
 		}
 	}
@@ -304,9 +328,22 @@ function KAclose() {
 	$("#grabberLinkContainer").get(0).style.display = "none";
 }
 
+function KAloadPreferredServer() {
+	if (localStorage.grabberPreferredServer && document.getElementById("grabberServer")) {
+		$("#grabberServer")[0].value = localStorage.grabberPreferredServer;
+	}
+}
+
+function KAsavePreferredServer() {
+	localStorage.grabberPreferredServer = $("#grabberServer")[0].value;
+}
+
 if (window.name !== "") {
 	KAsiteload();
-}`
+}
+
+KAloadPreferredServer()
+`
 
 	inject();
 })();
