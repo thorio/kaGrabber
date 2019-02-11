@@ -2,7 +2,7 @@
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
 // @version				1.4
-// @description		gets openload links from kissanime.ru
+// @description		gets embed links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
 // @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
