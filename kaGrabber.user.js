@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.4
+// @version				1.4.1
 // @description		gets embed links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
 // @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
 // @downloadURL		https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
 // @match					https://kissanime.ru/*
-// @match					https://oload.club/embed/*
 // ==/UserScript==
 //
 //Copyright 2018 Leon Timm
@@ -120,6 +119,7 @@
 			<input id="grabberGetStreamLinks" type="button" value="Get Stream Links" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; margin: 3px; font-size: 15px; float: left" onclick="KAstartStreamLinks()">
 			<input id="grabberShortenLinks" type="button" value="Shorten Links" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; margin: 3px; float: left" onclick="KAshortenLinks()">
 			<input id="grabberDownloadAll" type="button" value="Download All" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; margin: 3px; float: left" onclick="KAdownloadAll(1000)" hidden>
+			<input id="grabberExportJSON" type="button" value="Export JSON" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; margin: 3px; float: left" onclick="KAexportJSON()" hidden>
 		</div>
 	</div>
 </div>
@@ -165,9 +165,9 @@ function KAstart(startnum, endnum, server) {
 	}
 	katable = {};
 	if (startnum === undefined) {
-		katable.position = 0;
+		katable.startnum = katable.position = 0;
 	} else {
-		katable.position = startnum - 1;
+		katable.startnum = katable.position = startnum - 1;
 	}
 	if (endnum === undefined) {
 		katable.endnum = 999;
@@ -228,26 +228,46 @@ function KAprintLinks() {
 	grabberLinkDisplay.innerHTML = string; //push the links to the display element
 
 	$("#grabberLinkDisplayTitle")[0].innerText = "Extracted Links | " + katable.showTitle;
-	if (katable.streamlinklist) {
-		string = "<div id='grabberStreamLinks'>";
-		for (var i = 0; i < katable.streamlinklist.length; i++) { //string together all stream links, also wrap them in anchor tags
-			if (katable.streamlinklist[i] == "file not found") { // if there was an error getting the link
-				string += "<a>file not found</a><br>";
-			} else {
-				string += "<a href='" + katable.streamlinklist[i] + "' download>" + katable.streamlinklist[i] + "</a><br>";
-			}
-		}
-		grabberLinkDisplay.innerHTML += "<hr><p style='font-size: 16px'>Stream Links</p>" + string + "</div><br>";
-		document.getElementById("grabberGetStreamLinks").hidden = true;
-		document.getElementById("grabberDownloadAll").hidden = false;
-	}
-	if (katable.server != "openload") {
-		$("#grabberShortenLinks").hide();
-		$("#grabberGetStreamLinks").hide();
+	//if (katable.streamlinklist) {
+	//	string = "<div id='grabberStreamLinks'>";
+	//	for (var i = 0; i < katable.streamlinklist.length; i++) { //string together all stream links, also wrap them in anchor tags
+	//		if (katable.streamlinklist[i] == "file not found") { // if there was an error getting the link
+	//			string += "<a>file not found</a><br>";
+	//		} else {
+	//			string += "<a href='" + katable.streamlinklist[i] + "' download>" + katable.streamlinklist[i] + "</a><br>";
+	//		}
+	//	}
+	//	grabberLinkDisplay.innerHTML += "<hr><p style='font-size: 16px'>Stream Links</p>" + string + "</div><br>";
+	//	document.getElementById("grabberDownloadAll").hidden = false;
+	//}
+	$("#grabberShortenLinks").hide();
+	$("#grabberGetStreamLinks").hide();
+	if (window.location.href == katable.originalpage) {
+		$("#grabberExportJSON").show();
 	}
 	document.getElementById("grabberLinkContainer").style.display = "block"; //make the display visible
 }
 
+function KAexportJSON() {
+	var list = $(".listing").get(0).children[0].children;
+	var data = {
+		title: katable.showTitle,
+		server: katable.server,
+		episodes: []
+	};
+	for (var i = katable.startnum; i < katable.endnum; i++) {
+		data.episodes.push({
+			number: i+1,
+			name: list[list.length-i-1].children[1].innerText,
+			link: katable.finishedlist[i]
+		});
+	}
+	$("#grabberLinkDisplay")[0].innerHTML += '<textarea id="grabberJSONdisplay" rows=4 style="width: 100%;background-color: #252525;color: #DADADA;border: none;"></textarea>';
+	$("#grabberJSONdisplay")[0].innerText = JSON.stringify(data);
+	$("#grabberExportJSON").hide();
+}
+
+//unused
 function KAgetStreamLink() {
 	var ev = new MouseEvent("click");
 	var el = document.elementFromPoint(20, 20);

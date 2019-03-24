@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.4
+// @version				1.4.1
 // @description		gets embed links from kissanime.ru
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
 // @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
 // @downloadURL		https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
 // @match					https://kissanime.ru/*
-// @match					https://oload.club/embed/*
 // ==/UserScript==
 //
 //Copyright 2018 Leon Timm
