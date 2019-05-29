@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.4.1
-// @description		gets embed links from kissanime.ru
+// @version				1.4.2
+// @description		deprecated, use KissGrabber instead
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
 // @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
@@ -54,6 +54,10 @@
 				var addedHTML = '<input type="button" value="grab" style="background-color: #527701; color: #ffffff; border: none; cursor: pointer;" onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ', $(\'#grabberServer\')[0].value' + ')">&nbsp;'
 				currentItem.innerHTML = addedHTML + currentItem.innerHTML;
 			}
+
+			if (!localStorage["grabberClosedUpgradeNotice"]) {
+				$("#leftside").prepend(upgradeHTML);
+			}
 		}
 		var script = document.createElement("script");
 		script.type = "text/javascript";
@@ -69,6 +73,8 @@
 
 	//initially hidden HTML that is revealed and filled in by the grabber script
 	var linkListHTML = `[[[[linkList.html]]]]`
+
+	var upgradeHTML = `[[[[upgradeNotice.html]]]]`
 
 	//js injected into the page, this gets the links
 	var grabberScript = `[[[[kaGrabber.js]]]]`

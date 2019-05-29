@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name					Kissanime Link Grabber
 // @namespace			http://thorou.bitballoon.com/
-// @version				1.4.1
-// @description		gets embed links from kissanime.ru
+// @version				1.4.2
+// @description		deprecated, use KissGrabber instead
 // @author				Thorou
 // @homepageURL		https://github.com/thorio/kaGrabber/
 // @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
@@ -53,6 +53,10 @@
 				var currentEpisodeName = currentItem.children[0].innerText;
 				var addedHTML = '<input type="button" value="grab" style="background-color: #527701; color: #ffffff; border: none; cursor: pointer;" onclick="KAstart(' + (episodeCount - i + 2) + ',' + (episodeCount - i + 2) + ', $(\'#grabberServer\')[0].value' + ')">&nbsp;'
 				currentItem.innerHTML = addedHTML + currentItem.innerHTML;
+			}
+
+			if (!localStorage["grabberClosedUpgradeNotice"]) {
+				$("#leftside").prepend(upgradeHTML);
 			}
 		}
 		var script = document.createElement("script");
@@ -121,6 +125,22 @@
 			<input id="grabberDownloadAll" type="button" value="Download All" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; margin: 3px; float: left" onclick="KAdownloadAll(1000)" hidden>
 			<input id="grabberExportJSON" type="button" value="Export JSON" style="background-color: #548602; color: #ffffff; border: none; padding: 5px; padding-left: 12px; padding-right: 12px; font-size: 15px; margin: 3px; float: left" onclick="KAexportJSON()" hidden>
 		</div>
+	</div>
+</div>
+`
+
+	var upgradeHTML = `<div class="bigBarContainer" id="grabberUpgradeNotice">
+	<div class="barTitle">
+		<div id="grabberLinkDisplayTitle" style="width: 80%; float: left;">
+		Good News!
+		</div>
+		<a style="float: right; cursor: pointer;" onclick="localStorage['grabberClosedUpgradeNotice'] = true; $('#grabberUpgradeNotice').remove();">
+			close &nbsp;
+		</a>
+	</div>
+	<div class="barContent">
+		There's a new version if this script available, featuring improved export options and server availability!<br>
+		Upgrade <a href="https://greasyfork.org/en/scripts/383649-kissgrabber">here</a>.
 	</div>
 </div>
 `
